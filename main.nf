@@ -37,6 +37,11 @@ workflow {
 //        gatkCNV_wf(beds_ch, reference, reference_dict, reference_index, contig_dict, bams_ch)
 	mutect2_wf(bams_ch, beds_ch, reference, reference_dict, reference_index, common_variants, common_variants_index, clinvar)
 
+	publish:
+	mutect2_wf.out.rawVCF to: "${params.output_folder}/rawVCF"
+	mutect2_wf.out.filteredVCF to: "${params.output_folder}/filteredVCF"
+	mutect2_wf.out.annotated to: "${params.output_folder}/annotatedVCF"
+	mutect2_wf.out.funcotated to: "${params.output_folder}/funcotatedVCF"
 
 }
 

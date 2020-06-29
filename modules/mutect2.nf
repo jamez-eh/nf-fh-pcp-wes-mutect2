@@ -372,10 +372,12 @@ workflow mutect2_wf {
 	 annotateVariants(FilterMutectCalls.out, reference, reference_dict, reference_index, clinvar)
 	 DownloadData()
 	 Funcotator(FilterMutectCalls.out, reference, reference_index, reference_dict, DownloadData.out)
-	 //emit:
-	 //vcf = mutect2_tumor_only.out
-	 //filteredVCF = FilterMutectCalls.out
-	 //annotated = Funcotator.out 	 
+
+	 emit:
+	 rawVCF = mutect2_calls
+	 filteredVCF = FilterMutectCalls.out
+	 annotated = annotateVariants.out
+	 funcotated =  Funcotator.out 	 
 
 }
 
