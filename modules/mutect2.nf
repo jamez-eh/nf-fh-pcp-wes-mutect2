@@ -10,7 +10,7 @@ process DownloadData {
 container 'broadinstitute/gatk:4.1.4.1'
 errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
 maxRetries 100
-                
+label 'small'                
 	output:
         path funcotator_dataSource
 
@@ -25,9 +25,9 @@ maxRetries 100
 
 process samtoolsRemoveSecondary {
         container "fredhutch/bwa:0.7.17"
-        errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
-        maxRetries 100
-
+//        errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
+  //      maxRetries 100
+	label 'medium'
 
 	input:
 	tuple val(sampleID), val(kitID), val(type), val(patientID), file(bam_file)
@@ -74,6 +74,7 @@ process GenomicsDBImport {
 	container 'broadinstitute/gatk:4.1.5.0'
         errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
+	label 'medium'
 
 	input:
 	tuple val(kitID), file(interval), file(normal_list)
@@ -120,6 +121,7 @@ process CreateSomaticPanelOfNormals {
         container 'broadinstitute/gatk:4.1.5.0'
 	errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
+	label 'medium'
 
 	input:
 	tuple val(kitID), path(db)
@@ -231,7 +233,8 @@ process mutect2_matched_normal {
 process FilterMutectCalls {
         container 'broadinstitute/gatk:4.1.4.1'
         errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
-maxRetries 100
+	maxRetries 100
+	label 'medium'
 
         input:
         tuple val(sampleID), file(vcf),  file(vcf_index), file(stats)
@@ -252,7 +255,7 @@ maxRetries 100
 
 process annotateVariants {
         container 'broadinstitute/gatk:4.1.4.1'
-
+	label 'medium'
 
         input:
         tuple val(sampleID), file(vcf)
@@ -371,7 +374,7 @@ workflow mutect2_wf {
 	 FilterMutectCalls(mutect2_calls, reference, reference_dict, reference_index)
 	 annotateVariants(FilterMutectCalls.out, reference, reference_dict, reference_index, clinvar)
 	 DownloadData()
-	 Funcotator(FilterMutectCalls.out, reference, reference_index, reference_dict, DownloadData.out)
+	 Funcotator(annotateVariants.out, reference, reference_index, reference_dict, DownloadData.out)
 
 	 emit:
 	 rawVCF = mutect2_calls

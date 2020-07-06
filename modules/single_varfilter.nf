@@ -5,6 +5,7 @@ if(!params.data_source){
 	container 'broadinstitute/gatk:4.1.4.1'
 	errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
+	label 'small'
 
 		output: 
 		path funcotator_dataSource
@@ -116,6 +117,7 @@ process Funcotator {
 	container 'broadinstitute/gatk:4.1.5.0'
 	errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
+	label 'small'
 
 	input:
 	tuple sampleID, file(variants)
