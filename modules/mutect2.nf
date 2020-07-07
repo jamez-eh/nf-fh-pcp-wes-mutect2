@@ -5,9 +5,15 @@ include PreprocessIntervals from './gatkCNV.nf'
 include samtoolsIndex from './gatkCNV.nf'
 include Funcotator from './single_varfilter.nf'
 
-
+/*
+params.min-base-quality-score =  20 
+params.pcr-indel-model = 'AGGRESSIVE'
+params.callable-depth = 14 
+params.minimum-allele-fraction = 0.2 
+params.base-quality-score-threshold = 20 
+*/
 process DownloadData {
-container 'broadinstitute/gatk:4.1.4.1'
+container 'broadinstitute/gatk:4.1.7.0'
 errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
 maxRetries 100
 label 'small'                
@@ -43,7 +49,7 @@ process samtoolsRemoveSecondary {
 //       tuple val("${kitID}"), val("${patientID}"), val("${type}"), val("${sampleID}"), file("${bam}"), file("${bam}.bai")
 
 process mutect2_normal_only {
-        container 'broadinstitute/gatk:4.1.5.0'
+        container 'broadinstitute/gatk:4.1.7.0'
         errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 10
 	label 'medium'
@@ -71,7 +77,7 @@ process mutect2_normal_only {
 
 
 process GenomicsDBImport {
-	container 'broadinstitute/gatk:4.1.5.0'
+	container 'broadinstitute/gatk:4.1.7.0'
         errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
 	label 'medium'
@@ -118,7 +124,7 @@ os.system(script_f)
 
 
 process CreateSomaticPanelOfNormals {
-        container 'broadinstitute/gatk:4.1.5.0'
+        container 'broadinstitute/gatk:4.1.7.0'
 	errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
         maxRetries 100
 	label 'medium'
@@ -139,7 +145,7 @@ process CreateSomaticPanelOfNormals {
 
 
 process	mutect2_tumor_only {
-	container 'broadinstitute/gatk:4.1.5.0'
+	container 'broadinstitute/gatk:4.1.7.0'
 	label 'medium'
 
 
@@ -161,18 +167,18 @@ process	mutect2_tumor_only {
   	     -I ${bam_file} \
 	     --panel-of-normals ${normals} \
 	     --germline-resource ${common_variants} \
-	     --min-base-quality-score 20 \
-	     --pcr-indel-model AGGRESSIVE \
-	     --callable-depth 14 \
-	     --minimum-allele-fraction 0.2 \
-	     --base-quality-score-threshold 20 \
+	     --min-base-quality-score ${params.min_base_quality_score} \
+	     --pcr-indel-model ${params.pcr_indel_model} \
+	     --callable-depth ${params.callable_depth} \
+	     --minimum-allele-fraction ${params.minimum_allele_fraction} \
+	     --base-quality-score-threshold ${params.base_quality_score_threshold} \
     	     -O ${sampleID}.vcf.gz
 
 	"""
 }
 
 process mutect2_matched_normal {
-        container 'broadinstitute/gatk:4.1.5.0'
+        container 'broadinstitute/gatk:4.1.7.0'
 //errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
 //maxRetries 100
 	label 'medium'
@@ -219,11 +225,11 @@ process mutect2_matched_normal {
 	     -normal ${normal_sampleID} \
              --panel-of-normals ${normals} \
              --germline-resource ${common_variants} \
-             --min-base-quality-score 20 \
-             --pcr-indel-model AGGRESSIVE \
-             --callable-depth 14 \
-             --minimum-allele-fraction 0.2 \
-             --base-quality-score-threshold 20 \
+             --min-base-quality-score ${params.min_base_quality_score} \
+             --pcr-indel-model ${params.pcr_indel_model} \
+             --callable-depth ${params.callable_depth} \
+             --minimum-allele-fraction ${params.minimum_allele_fraction} \
+             --base-quality-score-threshold ${params.base_quality_score_threshold} \
              -O ${sampleID}.vcf.gz
 
         """
@@ -231,7 +237,7 @@ process mutect2_matched_normal {
 
 
 process FilterMutectCalls {
-        container 'broadinstitute/gatk:4.1.4.1'
+        container 'broadinstitute/gatk:4.1.7.0'
         errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
 	maxRetries 100
 	label 'medium'
@@ -254,7 +260,7 @@ process FilterMutectCalls {
 }
 
 process annotateVariants {
-        container 'broadinstitute/gatk:4.1.4.1'
+        container 'broadinstitute/gatk:4.1.7.0'
 	label 'medium'
 
         input:

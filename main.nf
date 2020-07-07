@@ -1,7 +1,21 @@
 nextflow.preview.dsl=2
 
+
+params.min_base_quality_score =  20
+params.pcr_indel_model = 'AGGRESSIVE'
+params.callable_depth = 14
+params.minimum_allele_fraction = 0.2
+params.base_quality_score_threshold = 20
+
 include gatkCNV_wf from './modules/gatkCNV.nf'
-include mutect2_wf from './modules/mutect2.nf' addParams(foo: 'Ciao')
+include mutect2_wf from './modules/mutect2.nf'  params(
+		   	min_base_quality_score: params.min_base_quality_score,
+		   			       					  pcr_indel_model: params.pcr_indel_model,
+										  callable_depth : params.callable_depth,
+										  minimum_allele_fraction : params.minimum_allele_fraction,
+										  base_quality_score_threshold : params.base_quality_score_threshold,)
+
+
 
 
 
