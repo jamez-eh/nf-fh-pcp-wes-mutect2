@@ -352,7 +352,7 @@ workflow mutect2_wf {
 
 	 samtoolsIndex.out.branch {
                 Normal : it[2] == 'Normal'
-                Tumor : it[2] == 'Tumor'
+                Tumor : it[2] == 'Tumor' | it[2] == 'PDX'
                }.set { bams_branched }
 
 
