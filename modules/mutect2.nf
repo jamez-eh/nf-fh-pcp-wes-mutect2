@@ -13,7 +13,7 @@ params.minimum-allele-fraction = 0.2
 params.base-quality-score-threshold = 20 
 */
 process DownloadData {
-container 'broadinstitute/gatk:4.1.7.0'
+container 'broadinstitute/gatk:4.1.5.0'
 errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
 maxRetries 100
 label 'small'                
