@@ -1,7 +1,7 @@
 nextflow.preview.dsl=2
 
 include gatkCNV_wf from './modules/gatkCNV.nf'
-include mutect2_wf from './modules/mutect2.nf'
+include mutect2_wf from './modules/mutect2.nf' addParams(foo: 'Ciao')
 
 
 
@@ -15,7 +15,6 @@ workflow {
 	 input_csv = file(params.input_csv)
 	 output_folder = file(params.output_folder)
 
-	 contig_dict = file(params.contig_dict)
 	 common_variants = file(params.common_variants)
 	 common_variants_index = file(params.common_variants_index)
 	 clinvar = file(params.clinvar)
