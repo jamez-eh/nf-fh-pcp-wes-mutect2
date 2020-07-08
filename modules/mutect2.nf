@@ -33,7 +33,7 @@ process samtoolsRemoveSecondary {
         container "fredhutch/bwa:0.7.17"
 //        errorStrategy { sleep(Math.pow(2, task.attempt) * 200 as long); return 'retry' }
   //      maxRetries 100
-	label 'medium'
+	label 'small'
 
 	input:
 	tuple val(sampleID), val(kitID), val(type), val(patientID), file(bam_file)
